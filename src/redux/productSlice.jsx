@@ -5,7 +5,8 @@ const initialState = {
     filteredProducts: [],
     searchQuery: "",
     loading: false,
-    selectedCategory: ""
+    selectedCategory: "",
+    minRating:null
 };
 
 const productSlice = createSlice({
@@ -27,8 +28,11 @@ const productSlice = createSlice({
         setSelectedCategory(state, action) {
             state.selectedCategory = action.payload
         },
+        setMinRating(state, action) {
+            state.minRating = action.payload
+        }
     }
 });
 
-export const { setAllProducts, setSearchQuery, setLoading, setSelectedCategory, setFilteredProducts } = productSlice.actions;
+export const { setAllProducts, setSearchQuery, setLoading, setSelectedCategory, setFilteredProducts,setMinRating } = productSlice.actions;
 export default productSlice.reducer;

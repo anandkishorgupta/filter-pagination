@@ -1,16 +1,18 @@
 
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import Spinner from '../common/Spinner';
-import Navbar from '../components/Navbar';
-import ProductCard from '../components/ProductCard';
-import SideBar from '../components/SideBar/Index';
+import Pagination from '../components/Home/Pagination';
+import ProductCard from '../components/Home/ProductCard';
+import SideBar from '../components/Home/SideBar/Index';
+import SortDropdown from '../components/Home/SortDropdown';
+import Spinner from '../components/common/Spinner';
+import { setFilteredProducts } from '../redux/productSlice';
 import { filterProducts } from '../services/services';
 
 const Home = () => {
     const dispatch = useDispatch();
-    const { filteredProducts, searchQuery, loading, selectedCategory } = useSelector((state) => state.product);
-
+    const { filteredProducts, searchQuery, loading, selectedCategory, minRating } = useSelector((state) => state.product);
+    const [isOpenDropdown, setIsOpenDropdown] = useState(false)
     // pagination logic
     const [currentPage, setCurrentPage] = useState(1);
     const productsPerPage = 7;
@@ -31,66 +33,108 @@ const Home = () => {
     let newArray = Array.from({ length: totalPages }, (value, index) => index + 1);
 
 
-    useEffect(() => {
-        dispatch(filterProducts(searchQuery, selectedCategory));
-    }, [searchQuery, selectedCategory, dispatch]);
 
     console.log("filtered products..............", filteredProducts)
+
+
+    // SORTING
+    const [sort, setSort] = useState(null);
+
+    // Function to sort products based on price
+    const sortProducts = (sortOrder) => {
+        if (sortOrder === 'lowToHigh') {
+            const sortedProducts = [...filteredProducts].sort((a, b) => a.price - b.price);
+            dispatch(setFilteredProducts(sortedProducts));
+        } else if (sortOrder === 'highToLow') {
+            const sortedProducts = [...filteredProducts].sort((a, b) => b.price - a.price);
+            dispatch(setFilteredProducts(sortedProducts));
+        }
+        setSort(sortOrder);
+    };
+
+    // Function to manage filtering and sorting
+    const applyFilterAndSort = () => {
+        dispatch(filterProducts(searchQuery, selectedCategory, minRating));
+        if (sort) {
+            sortProducts(sort);
+        }
+    };
+
+    // When the search query, selected category, or dispatch function changes, apply filters and sort
+    useEffect(() => {
+        applyFilterAndSort();
+        setCurrentPage(1)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [searchQuery, selectedCategory, minRating, dispatch]);
+
     return (
-        <div>
-            <Navbar />
-            <div className='flex flex-row gap-x-5 pt-20'>
-                <SideBar
-                />
-                <div className='flex flex-col'>
-                    <div>
-                        <span>Page {currentPage} of {totalPages} {" "} ({filteredProducts.length} products)</span>
-                    </div>
-                    <div className='flex flex-row gap-x-3 flex-wrap w-11/12 mx-auto gap-y-5 items-center'>
+        <div className=' bg-[#ECECEC]'>
+            <div className='flex flex-row gap-x-5 pt-10'>
+                <SideBar />
 
-                        {
-                            !loading && currentProducts.length > 0 && currentProducts
-                                .map((product, index) => (
-                                    <div key={index}>
-                                        <ProductCard
-                                            title={product.title}
-                                            description={product.description}
-                                            price={product.price}
-                                            thumbnail={product.thumbnail}
-                                            brand={product.brand}
-                                            category={product.category}
-                                            rating={product.rating}
-                                            images={product.images}
-                                            discountPercentage={product.discountPercentage}
-                                        />
-                                    </div>
-                                ))
-                        }
-                        {
-                            loading &&
-                            <div>
-                                <Spinner />
-                            </div>
-                        }
+                {/* product section */}
+                <div className='flex flex-col w-full pr-2'>
+                    <div className='flex justify-between items-center'>
+                        <span>
+                            Page {currentPage} of {totalPages}
+                        </span>
+                        {/* SORT */}
+                        <div className=' flex flex-row gap-x-2 items-center'>
+                            Found {filteredProducts.length} results
+                            <SortDropdown
+                                sortProducts={sortProducts}
+                                isOpenDropdown={isOpenDropdown}
+                                setIsOpenDropdown={setIsOpenDropdown}
+                            />
+                        </div>
+
                     </div>
-                    <div className="pagination flex gap-x-2">
-                        <button onClick={handlePrevPage} disabled={currentPage === 1}>
-                            Prev
-                        </button>
+
+                    <div
+                        className=' mt-2 grid  lg:grid-cols-4  gap-y-5 gap-x-1  min-h-[100vh]'
+                    >
                         {
-                            newArray?.map((page, index) => (
-                                <li key={index}
-                                    onClick={() => setCurrentPage(page)}
-                                    className='cursor-pointer list-none'
-                                >{page}</li>
-                            ))
+                            !loading ? (
+                                currentProducts.length > 0 ? (
+                                    currentProducts.map((product, index) => (
+                                        <div key={index}>
+                                            <ProductCard
+                                                title={product.title}
+                                                description={product.description}
+                                                price={product.price}
+                                                thumbnail={product.thumbnail}
+                                                brand={product.brand}
+                                                category={product.category}
+                                                rating={product.rating}
+                                                images={product.images}
+                                                discountPercentage={product.discountPercentage}
+                                            />
+                                        </div>
+                                    ))
+                                ) : (
+                                    <div className='flex items-center justify-center'>product not found</div>
+                                )
+                            ) : (
+                                <div className='w-full flex justify-center items-center mt-10'>
+                                    <Spinner />
+                                </div>
+                            )
                         }
-                        <button onClick={handleNextPage} disabled={currentPage === totalPages}>
-                            Next
-                        </button>
+
                     </div>
+
+
+                    <div className='h-[40px]'></div>
+                    {/* pagination */}
+                    <Pagination
+                        currentPage={currentPage}
+                        handleNextPage={handleNextPage}
+                        handlePrevPage={handlePrevPage}
+                        newArray={newArray}
+                        setCurrentPage={setCurrentPage}
+                        totalPages={totalPages}
+                    />
                 </div>
-
             </div>
         </div>
     );

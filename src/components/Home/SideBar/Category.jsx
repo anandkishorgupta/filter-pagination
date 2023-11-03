@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { AiOutlineDown } from 'react-icons/ai';
 import { useDispatch, useSelector } from "react-redux";
-import { setSelectedCategory } from "../../redux/productSlice";
+import { setSelectedCategory } from "../../../redux/productSlice";
 const Category = ({ availableCategories, categoryCounts }) => {
     const [categoryFlag, setCategoryFlag] = useState(false);
     const { selectedCategory } = useSelector((state) => state.product);

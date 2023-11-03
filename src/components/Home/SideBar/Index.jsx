@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSelector } from 'react-redux';
 import Category from "./Category";
+import Rating from "./Rating";
 
 const SideBar = () => {
     const { allProducts, filteredProducts, selectedCategory } = useSelector((state) => state.product);
@@ -22,9 +23,8 @@ const SideBar = () => {
 
     console.log(categoryCounts)
 
-
     return (
-        <div className="sidebar-container w-[400px] border-r border-green-700 px-2">
+        <div className="sidebar-container w-[280px]   bg-white rounded-xl py-6 px-4 ml-5">
             <div className="flex justify-between">
                 <p>Filters</p>
                 <p className="text-green-700 cursor-pointer">Clear all</p>
@@ -33,8 +33,8 @@ const SideBar = () => {
                 availableCategories={availableCategories}
                 categoryCounts={categoryCounts}
             />
+            <Rating />
         </div>
     );
 };
-
 export default SideBar;
