@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { setAllProducts, setFilteredProducts, setLoading } from '../redux/productSlice';
 
-export const filterProducts = (query, selectedCategory, minRating) => {
+export const filterProducts = (query, selectedCategory, minRating, priceRange = []) => {
     return async (dispatch) => {
         try {
             dispatch(setLoading(true))
@@ -23,6 +23,13 @@ export const filterProducts = (query, selectedCategory, minRating) => {
             // arting filter
             if (minRating > 0) {
                 filteredProducts = filteredProducts.filter(item => item.rating >= minRating);
+            }
+            // filter by price range
+            if (priceRange.length > 0) {
+                filteredProducts = filteredProducts.filter(item =>
+                    item.price >= priceRange[0] && item.price <= priceRange[1]
+                );
+
             }
             dispatch(setFilteredProducts(filteredProducts));
             dispatch(setLoading(false))

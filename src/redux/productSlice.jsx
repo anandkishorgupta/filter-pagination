@@ -6,7 +6,8 @@ const initialState = {
     searchQuery: "",
     loading: false,
     selectedCategory: "",
-    minRating:null
+    minRating: null,
+    priceRange: []
 };
 
 const productSlice = createSlice({
@@ -30,9 +31,12 @@ const productSlice = createSlice({
         },
         setMinRating(state, action) {
             state.minRating = action.payload
+        },
+        setPriceRange(state, action) {
+            state.priceRange = action.payload
         }
     }
 });
 
-export const { setAllProducts, setSearchQuery, setLoading, setSelectedCategory, setFilteredProducts,setMinRating } = productSlice.actions;
+export const { setAllProducts, setSearchQuery, setLoading, setSelectedCategory, setFilteredProducts, setMinRating,setPriceRange } = productSlice.actions;
 export default productSlice.reducer;

@@ -22,12 +22,11 @@ const SideBar = () => {
     }, [allProducts]);
 
     console.log(categoryCounts)
-
     return (
-        <div className="sidebar-container w-[280px]   bg-white rounded-xl py-6 px-4 ml-5">
+        <div className="sidebar-container w-[280px]   bg-white rounded-xl py-6 px-4 ml-5 h-[calc(100vh - 100px)] ">
             <div className="flex justify-between">
                 <p>Filters</p>
-                <p className="text-green-700 cursor-pointer">Clear all</p>
+
             </div>
             <Category
                 availableCategories={availableCategories}

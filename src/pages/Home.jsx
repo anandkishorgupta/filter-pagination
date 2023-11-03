@@ -11,8 +11,9 @@ import { filterProducts } from '../services/services';
 
 const Home = () => {
     const dispatch = useDispatch();
-    const { filteredProducts, searchQuery, loading, selectedCategory, minRating } = useSelector((state) => state.product);
+    const { filteredProducts, searchQuery, loading, selectedCategory, minRating, priceRange } = useSelector((state) => state.product);
     const [isOpenDropdown, setIsOpenDropdown] = useState(false)
+
     // pagination logic
     const [currentPage, setCurrentPage] = useState(1);
     const productsPerPage = 7;

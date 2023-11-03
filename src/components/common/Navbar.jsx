@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { CiSearch } from "react-icons/ci";
 import { useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 import { setSearchQuery } from "../../redux/productSlice";
 import { filterProducts } from "../../services/services";
 
@@ -8,7 +9,7 @@ const Navbar = () => {
     // const { searchQuery } = useSelector((state) => state.product);
     const dispatch = useDispatch();
     const [input, setInput] = useState("")
-
+    const navigate = useNavigate()
 
     const handleKeyPress = (event) => {
         if (event.key === 'Enter') {
@@ -23,8 +24,12 @@ const Navbar = () => {
     return (
         <div className="border  w-full bg-white py-3">
             <div className="flex items-center gap-x-5 w-11/12 mx-auto">
-                <div>
-                    MarketZone
+                <div >
+                    <Link to={"/"}
+                    >
+
+                        MarketZone
+                    </Link>
                 </div>
                 <div>
                     <div className="flex items-center relative">
